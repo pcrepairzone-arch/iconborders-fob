@@ -24,9 +24,9 @@
                ditherflags = flags to use for dithering
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_draw(int type, unsigned long flags,
+int border_draw(int type, uint32_t flags,
                  bbox_t *box, colours_t *colours,
-                 unsigned long ditherflags)
+                 uint32_t ditherflags)
 {
   int mind = (box->dx < box->dy) ? box->dx : box->dy;
   /* mind contains the minimum of dx and dy so that when drawing the
@@ -84,8 +84,8 @@ int border_draw(int type, unsigned long flags,
                colours-> the colours in use
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_fill(int type, unsigned long flags, bbox_t *box,
-                colours_t *colours, unsigned long ditherflags)
+int border_fill(int type, uint32_t flags, bbox_t *box,
+                colours_t *colours, uint32_t ditherflags)
 {
   int x0,y0,x1,y1;
   int mind = (box->dx < box->dy) ? box->dx : box->dy;
@@ -134,9 +134,9 @@ int border_fill(int type, unsigned long flags, bbox_t *box,
  Parameters:   col = the colour to make brighter
  Returns:      none
  ******************************************************************/
-static unsigned long bright(unsigned long col)
+static uint32_t bright(uint32_t col)
 {
-  unsigned long r,g,b;
+  uint32_t r,g,b;
   r = (col & 0x0000FF00)>>8;
   g = (col & 0x00FF0000)>>16;
   b = (col & 0xFF000000)>>24;
@@ -158,8 +158,8 @@ static unsigned long bright(unsigned long col)
                background = window background colour
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_colour(int type, unsigned long flags, bbox_t *box,
-                  colours_t *cols, unsigned long background)
+int border_colour(int type, uint32_t flags, bbox_t *box,
+                  colours_t *cols, uint32_t background)
 {
   if ((type==5 || type==6) && box->x1-box->x0 > MIN_WIDTH)
   {
@@ -214,7 +214,7 @@ int border_colour(int type, unsigned long flags, bbox_t *box,
                box-> the bounding box to use
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_size(int type, unsigned long flags, bbox_t *box)
+int border_size(int type, uint32_t flags, bbox_t *box)
 {
   /* We need to return the size of the box, once the border has been
      applied. This is used to position text within the remaining space
@@ -257,7 +257,7 @@ int border_size(int type, unsigned long flags, bbox_t *box)
                box-> the bounding box to use
  Returns:      our state flags for rendering
  ******************************************************************/
-unsigned long border_state(int type, unsigned long flags, bbox_t *box)
+uint32_t border_state(int type, uint32_t flags, bbox_t *box)
 {
   /* We need to return state flags to indicate what sort of button we provide
      in order that the Wimp can decide what to do about it. */

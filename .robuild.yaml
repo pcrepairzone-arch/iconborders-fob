@@ -46,3 +46,31 @@ jobs:
       # Each element of the artifacts should have a path key, which gives the file or
       # directory to return.
       - path: Artifacts
+
+  build64:
+    # 64-bit (AArch64) build for Phoenix / RISC OS 64-bit environments.
+    # Uses CMunge -64bit and the AArch64 GCC toolchain.
+    env:
+      "Sys$Environment": ROBuild
+      "BUILD64": 1
+      "Alias$AMU": "HostAMU %*0"
+
+    script:
+      # Build the 64-bit module and test application
+      - amu -f MakefileApp
+      - amu -f Makefile ram
+
+      # Run the test
+      # MODE 28
+      - echo <22><28>
+      - aif64.IconBorderFob -quit
+      - screensave Buttons64
+
+      # Copy the resulting files
+      - cdir Artifacts64
+      - copy rm64.IconBorderFob Artifacts64.* ~CV~R
+      - copy aif64.IconBorderFob Artifacts64.Test ~CV~R
+      - copy Buttons64 Artifacts64.TestOutput ~CV~R
+
+    artifacts:
+      - path: Artifacts64

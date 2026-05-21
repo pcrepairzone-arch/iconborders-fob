@@ -8,13 +8,18 @@
 #ifndef BORDERS_H
 #define BORDERS_H
 
+#include <stdint.h>
+
 typedef struct bbox_s {
   int x0,y0,x1,y1;
   int dx,dy;
   int dx_1,dy_1;
 } bbox_t;
 
-typedef unsigned long colours_t;
+/* colours_t is a 32-bit &BBGGRR00 value as passed by the Wimp filter
+ * interface.  Must be uint32_t so the array layout is correct on both
+ * AArch32 and AArch64 — unsigned long is 64-bit on AArch64. */
+typedef uint32_t colours_t;
 
 #define COLOUR_FG    (0)
 #define COLOUR_BG    (1)
@@ -41,9 +46,9 @@ typedef unsigned long colours_t;
                ditherflags = flags to use for dithering
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_draw(int type, unsigned long flags,
+int border_draw(int type, uint32_t flags,
                  bbox_t *box, colours_t *colours,
-                 unsigned long ditherflags);
+                 uint32_t ditherflags);
 
 /*************************************************** Gerph *********
  Function:     border_fill
@@ -54,8 +59,8 @@ int border_draw(int type, unsigned long flags,
                colours-> the colours in use
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_fill(int type, unsigned long flags, bbox_t *box,
-                colours_t *colours, unsigned long ditherflags);
+int border_fill(int type, uint32_t flags, bbox_t *box,
+                colours_t *colours, uint32_t ditherflags);
 
 /*************************************************** Gerph *********
  Function:     border_colour
@@ -67,8 +72,8 @@ int border_fill(int type, unsigned long flags, bbox_t *box,
                background = window background colour
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_colour(int type, unsigned long flags, bbox_t *box,
-                  colours_t *cols, unsigned long background);
+int border_colour(int type, uint32_t flags, bbox_t *box,
+                  colours_t *cols, uint32_t background);
 
 /*************************************************** Gerph *********
  Function:     border_size
@@ -78,7 +83,7 @@ int border_colour(int type, unsigned long flags, bbox_t *box,
                box-> the bounding box to use
  Returns:      1 if handled, 0 if not handled
  ******************************************************************/
-int border_size(int type, unsigned long flags, bbox_t *box);
+int border_size(int type, uint32_t flags, bbox_t *box);
 
 /*************************************************** Gerph *********
  Function:     border_state
@@ -88,6 +93,6 @@ int border_size(int type, unsigned long flags, bbox_t *box);
                box-> the bounding box to use
  Returns:      our state flags for rendering
  ******************************************************************/
-unsigned long border_state(int type, unsigned long flags, bbox_t *box);
+uint32_t border_state(int type, uint32_t flags, bbox_t *box);
 
 #endif

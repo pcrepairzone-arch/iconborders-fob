@@ -8,6 +8,7 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#include <stdint.h>
 #include "swis.h"
 
 #define move(x,y)            _swix(OS_Plot, _INR(0,2),4,x,y)
@@ -20,7 +21,7 @@
  Parameters:   col = colour
  Returns:      none
  ******************************************************************/
-void gcol(unsigned long col);
+void gcol(uint32_t col);
 
 /*************************************************** Gerph *********
  Function:     point

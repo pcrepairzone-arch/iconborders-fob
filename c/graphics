@@ -14,7 +14,7 @@
  Parameters:   col = colour
  Returns:      none
  ******************************************************************/
-void gcol(unsigned long col)
+void gcol(uint32_t col)
 {
   _swix(ColourTrans_SetGCOL, _IN(0)|_INR(3,4),col,256,0);
 }
