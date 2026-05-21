@@ -69,3 +69,63 @@ jobs:
           path: |
             /tmp/IconBorderFob-rm32*
             ${{ github.workspace }}/build32.log
+
+  build-64bit:
+    name: Build IconBorderFob (AArch64)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: riscos-build-server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download riscos-build-online
+        run: |
+          curl -L -o "$GITHUB_WORKSPACE/riscos-build-online" \
+            "https://github.com/gerph/robuild-client/releases/download/v0.07/riscos-build-online"
+          chmod +x "$GITHUB_WORKSPACE/riscos-build-online"
+
+      - name: Write .robuild.yaml
+        run: |
+          cat > .robuild.yaml << 'ROBUILD'
+          format: 1
+          jobs:
+            build:
+              env:
+                "Sys$Environment": ROBuild
+                "BUILD64": 1
+                "Alias$AMU": "HostAMU %*0"
+              script:
+                - Set Run$Path <Run$Path>,$.Library.
+                - Set Makefiles$Path $.Libs.Makefiles.
+                - Set C$Path $.Libs.C.CLib.,$.Libs.C.
+                - Set Hdr$Path $.Libs.Hdr.
+                - Echo ===BUILD===
+                - amu -f Makefile ram
+                - Echo ===AFTER BUILD===
+                - IfThere rm64 Then Cat rm64 Else Echo no rm64 dir
+              artifacts:
+                - path: rm64
+          ROBUILD
+
+      - name: Zip source
+        run: zip -q9r /tmp/source-archive.zip c cmhg h Makefile,fe1 VersionNum .robuild.yaml
+
+      - name: Build via RISC OS build service
+        run: |
+          "$GITHUB_WORKSPACE/riscos-build-online" \
+            -i /tmp/source-archive.zip \
+            -A aarch64 \
+            -t 120 \
+            -o /tmp/IconBorderFob-rm64 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build64.log"
+
+      - name: Upload module artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: IconBorderFob-aarch64
+          path: |
+            /tmp/IconBorderFob-rm64*
+            ${{ github.workspace }}/build64.log
